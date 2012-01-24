@@ -30,7 +30,7 @@ import org.jboss.arquillian.persistence.data.descriptor.Format;
 public class PersistenceConfiguration implements Serializable
 {
 
-   private static final long serialVersionUID = -6930645145050348980L;
+   private static final long serialVersionUID = -6930645144980348980L;
 
    private String defaultDataSource;
 
@@ -53,6 +53,8 @@ public class PersistenceConfiguration implements Serializable
    private String userTransactionJndi = "java:comp/UserTransaction";
 
    private boolean excludePoi = false;
+   
+   private boolean deleteTestDatasetTablesOnly = false;
 
    // Accessors
 
@@ -183,6 +185,14 @@ public class PersistenceConfiguration implements Serializable
    public void setExcludePoi(boolean excludePoi)
    {
       this.excludePoi = excludePoi;
+   }
+
+   public boolean isDeleteTestDatasetTablesOnly() {
+      return deleteTestDatasetTablesOnly;
+   }
+
+   public void setDeleteTestDatasetTablesOnly(boolean deleteTestDatasetTablesOnly) {
+      this.deleteTestDatasetTablesOnly = deleteTestDatasetTablesOnly;
    }
 
 }

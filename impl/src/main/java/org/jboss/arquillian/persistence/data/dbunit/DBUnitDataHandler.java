@@ -29,6 +29,7 @@ import org.dbunit.operation.TransactionOperation;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
+import org.jboss.arquillian.persistence.configuration.PersistenceConfiguration;
 import org.jboss.arquillian.persistence.data.DataHandler;
 import org.jboss.arquillian.persistence.data.dbunit.dataset.DataSetRegister;
 import org.jboss.arquillian.persistence.data.dbunit.exception.DBUnitDataSetHandlingException;
@@ -52,6 +53,9 @@ public class DBUnitDataHandler implements DataHandler
 
    @Inject
    private Instance<DatabaseConnection> databaseConnection;
+   
+   @Inject
+   private Instance<PersistenceConfiguration> configuration;
 
    @Inject
    private Instance<DataSetRegister> dataSetRegister;
@@ -191,7 +195,14 @@ public class DBUnitDataHandler implements DataHandler
    private void cleanDatabase() throws Exception
    {
       DatabaseConnection connection = databaseConnection.get();
-      IDataSet dataSet = connection.createDataSet();
+      IDataSet dataSet = null;
+      if (configuration.get().isDeleteTestDatasetTablesOnly()) {
+         // only deletes contents of tables that were defined as data sets for test
+         dataSet = DataSetUtils.mergeDataSets(dataSetRegister.get().getInitial());
+      } else {
+         // delete contents of every table in the database
+         dataSet = connection.createDataSet();
+      }
       new TransactionOperation(DatabaseOperation.DELETE_ALL).execute(connection, dataSet);
    }
 

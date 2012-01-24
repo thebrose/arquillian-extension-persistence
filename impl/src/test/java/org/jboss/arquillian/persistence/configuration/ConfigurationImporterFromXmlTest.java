@@ -138,6 +138,7 @@ public class ConfigurationImporterFromXmlTest
       assertThat(configuration.isDumpData()).isFalse();
    }
 
+   @Test
    public void shouldHaveSystemTempDirDefinedAsDefaultDumpDirectory() throws Exception
    {
       // given
@@ -149,6 +150,19 @@ public class ConfigurationImporterFromXmlTest
 
       // then
       assertThat(configuration.getDumpDirectory()).isEqualTo(systemTmpDir);
+   }
+   
+   @Test
+   public void shouldHaveDeleteTestDatasetTablesOnlyDisabledByDefault() throws Exception
+   {
+      // given
+      ArquillianDescriptor descriptor = TestConfigurationLoader.createArquillianDescriptor("arquillian-without-persistence-properties.xml");
+
+      // when
+      PersistenceConfiguration configuration = new ConfigurationImporter().from(descriptor);
+
+      // then
+      assertThat(configuration.isDeleteTestDatasetTablesOnly()).isFalse();
    }
 
    @Test
@@ -191,5 +205,18 @@ public class ConfigurationImporterFromXmlTest
 
       // then
       assertThat(configuration.getUserTransactionJndi()).isEqualTo(expectedUserTransactionJndi);
+   }
+   
+   @Test
+   public void shouldBeAbleToEnableDeleteTestDatasetTablesOnly() throws Exception
+   {
+      // given
+      ArquillianDescriptor descriptor = TestConfigurationLoader.createArquillianDescriptor("arquillian.xml");
+
+      // when
+      PersistenceConfiguration configuration = new ConfigurationImporter().from(descriptor);
+
+      // then
+      assertThat(configuration.isDeleteTestDatasetTablesOnly()).isTrue();
    }
 }

@@ -57,6 +57,7 @@ public class ConfigurationExporterToPropertyFilesTest
       persistenceConfiguration.setDefaultDataSource("DefaultDS");
       persistenceConfiguration.setDefaultTransactionMode(TransactionMode.ROLLBACK);
       persistenceConfiguration.setDefaultDataSetLocation("ds");
+      persistenceConfiguration.setDumpDirectory("/tmp");
 
       ConfigurationExporter exporter = new ConfigurationExporter(persistenceConfiguration);
 

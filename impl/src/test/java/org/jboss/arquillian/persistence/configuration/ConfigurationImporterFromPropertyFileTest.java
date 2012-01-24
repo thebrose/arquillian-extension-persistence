@@ -124,5 +124,18 @@ public class ConfigurationImporterFromPropertyFileTest
       // then
       assertThat(configuration.getUserTransactionJndi()).isEqualTo(expectedUserTransactionJndi);
    }
+   
+   @Test
+   public void shouldBeAbleToTurnOnDeleteTestDatasetTablesOnly() throws Exception
+   {
+      // given
+      Properties properties = TestConfigurationLoader.createPropertiesFromCustomConfigurationFile();
+
+      // when
+      PersistenceConfiguration configuration = new ConfigurationImporter().from(properties);
+
+      // then
+      assertThat(configuration.isDeleteTestDatasetTablesOnly()).isTrue();
+   }
 
 }
