@@ -31,6 +31,7 @@ import org.jboss.arquillian.persistence.data.script.ScriptHelper;
 import org.jboss.arquillian.persistence.metadata.DataSetProvider;
 import org.jboss.arquillian.persistence.metadata.ExpectedDataSetProvider;
 import org.jboss.arquillian.persistence.metadata.MetadataExtractor;
+import org.jboss.arquillian.persistence.metadata.PersistenceExtensionEnabler;
 import org.jboss.arquillian.persistence.metadata.SqlScriptProvider;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
@@ -53,7 +54,18 @@ public class PersistenceExtensionDynamicDependencyAppender implements Applicatio
    @Override
    public void process(Archive<?> applicationArchive, TestClass testClass)
    {
-      addResources(applicationArchive, toJavaArchive(fetchAllDataResources(testClass)));
+
+      final PersistenceExtensionEnabler persistenceExtensionEnabler = new PersistenceExtensionEnabler(testClass);
+      if (!persistenceExtensionEnabler.isPersistenceExtensionRequired())
+      {
+         return;
+      }
+
+      final Set<ResourceDescriptor<?>> allDataResources = fetchAllDataResources(testClass);
+      if (!allDataResources.isEmpty())
+      {
+         addResources(applicationArchive, toJavaArchive(allDataResources));
+      }
       addSqlScriptAsResource(applicationArchive, configuration.get().getCleanupStatement());
       addSqlScriptAsResource(applicationArchive, configuration.get().getInitStatement());
    }

@@ -34,7 +34,7 @@ import org.jboss.arquillian.persistence.data.dbunit.dataset.DataSetBuilder;
 import org.jboss.arquillian.persistence.data.dbunit.dataset.DataSetRegister;
 import org.jboss.arquillian.persistence.data.dbunit.exception.DBUnitConnectionException;
 import org.jboss.arquillian.persistence.data.dbunit.exception.DBUnitInitializationException;
-import org.jboss.arquillian.persistence.data.descriptor.DataSetDescriptor;
+import org.jboss.arquillian.persistence.data.descriptor.DataSetResourceDescriptor;
 import org.jboss.arquillian.persistence.data.descriptor.Format;
 import org.jboss.arquillian.persistence.event.AfterPersistenceTest;
 import org.jboss.arquillian.persistence.event.BeforePersistenceTest;
@@ -81,7 +81,7 @@ public class DBUnitPersistenceTestLifecycleHandler
       }
       catch (Exception e)
       {
-         throw new DBUnitConnectionException("Unable to close connection", e);
+         throw new DBUnitConnectionException("Unable to close connection.", e);
       }
    }
 
@@ -113,14 +113,14 @@ public class DBUnitPersistenceTestLifecycleHandler
       }
       catch (Exception e)
       {
-         throw new DBUnitInitializationException("Unable to initialize database connection for dbunit module", e);
+         throw new DBUnitInitializationException("Unable to initialize database connection for dbunit module.", e);
       }
    }
 
-   private void createInitialDataSets(List<DataSetDescriptor> dataSetDescriptors)
+   private void createInitialDataSets(List<DataSetResourceDescriptor> dataSetDescriptors)
    {
       DataSetRegister dataSetRegister = getOrCreateDataSetRegister();
-      for (DataSetDescriptor dataSetDescriptor : dataSetDescriptors)
+      for (DataSetResourceDescriptor dataSetDescriptor : dataSetDescriptors)
       {
          IDataSet initialDataSet = createInitialDataSet(dataSetDescriptor);
          dataSetRegister.addInitial(initialDataSet);
@@ -128,17 +128,17 @@ public class DBUnitPersistenceTestLifecycleHandler
       dataSetRegisterProducer.set(dataSetRegister);
    }
 
-   private IDataSet createInitialDataSet(DataSetDescriptor dataSetDescriptor)
+   private IDataSet createInitialDataSet(DataSetResourceDescriptor dataSetDescriptor)
    {
       final String file = dataSetDescriptor.getLocation();
       final Format format = dataSetDescriptor.getFormat();
       return DataSetBuilder.builderFor(format).build(file);
    }
 
-   private void createExpectedDataSets(List<DataSetDescriptor> dataSetDescriptors)
+   private void createExpectedDataSets(List<DataSetResourceDescriptor> dataSetDescriptors)
    {
       DataSetRegister dataSetRegister = getOrCreateDataSetRegister();
-      for (DataSetDescriptor dataSetDescriptor : dataSetDescriptors)
+      for (DataSetResourceDescriptor dataSetDescriptor : dataSetDescriptors)
       {
          IDataSet expectedDataSet = createExpectedDataSet(dataSetDescriptor);
          dataSetRegister.addExpected(expectedDataSet);
@@ -146,7 +146,7 @@ public class DBUnitPersistenceTestLifecycleHandler
       dataSetRegisterProducer.set(dataSetRegister);
    }
 
-   private IDataSet createExpectedDataSet(DataSetDescriptor dataSetDescriptor)
+   private IDataSet createExpectedDataSet(DataSetResourceDescriptor dataSetDescriptor)
    {
       String file = dataSetDescriptor.getLocation();
       Format format = dataSetDescriptor.getFormat();

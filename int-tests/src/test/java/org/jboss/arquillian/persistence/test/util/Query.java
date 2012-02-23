@@ -15,30 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.arquillian.persistence.exception;
+package org.jboss.arquillian.persistence.test.util;
 
-public class PersistenceExtensionDeploymentAppenderException extends RuntimeException
+import org.jboss.arquillian.persistence.test.UserAccount;
+
+public class Query
 {
 
-   private static final long serialVersionUID = -4172000408985536802L;
-
-   public PersistenceExtensionDeploymentAppenderException()
+   public static String selectAllInJPQL(final Class<UserAccount> c)
    {
-   }
-
-   public PersistenceExtensionDeploymentAppenderException(String message)
-   {
-      super(message);
-   }
-
-   public PersistenceExtensionDeploymentAppenderException(Throwable cause)
-   {
-      super(cause);
-   }
-
-   public PersistenceExtensionDeploymentAppenderException(String message, Throwable cause)
-   {
-      super(message, cause);
+      return "SELECT entity FROM " + c.getSimpleName() + " entity";
    }
 
 }

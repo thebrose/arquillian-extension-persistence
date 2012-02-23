@@ -33,11 +33,11 @@ import org.jboss.arquillian.persistence.configuration.PersistenceConfiguration;
 import org.jboss.arquillian.persistence.data.DataHandler;
 import org.jboss.arquillian.persistence.data.dbunit.dataset.DataSetRegister;
 import org.jboss.arquillian.persistence.data.dbunit.exception.DBUnitDataSetHandlingException;
-import org.jboss.arquillian.persistence.data.descriptor.SqlScriptDescriptor;
+import org.jboss.arquillian.persistence.data.descriptor.SqlScriptResourceDescriptor;
 import org.jboss.arquillian.persistence.data.script.ScriptHelper;
 import org.jboss.arquillian.persistence.event.ApplyCleanupStatement;
 import org.jboss.arquillian.persistence.event.ApplyInitStatement;
-import org.jboss.arquillian.persistence.event.CleanUpData;
+import org.jboss.arquillian.persistence.event.CleanupData;
 import org.jboss.arquillian.persistence.event.CompareData;
 import org.jboss.arquillian.persistence.event.ExecuteScripts;
 import org.jboss.arquillian.persistence.event.PrepareData;
@@ -94,7 +94,7 @@ public class DBUnitDataHandler implements DataHandler
       }
       catch (Exception e)
       {
-         throw new DBUnitDataSetHandlingException(e);
+         throw new DBUnitDataSetHandlingException("Failed while seeding database.", e);
       }
    }
 
@@ -126,12 +126,12 @@ public class DBUnitDataHandler implements DataHandler
       }
       catch (Exception e)
       {
-         throw new DBUnitDataSetHandlingException(e);
+         throw new DBUnitDataSetHandlingException("Failed while comparing database state with provided data sets.", e);
       }
    }
 
    @Override
-   public void cleanup(@Observes CleanUpData cleanupDataEvent)
+   public void cleanup(@Observes CleanupData cleanupDataEvent)
    {
       try
       {
@@ -139,14 +139,14 @@ public class DBUnitDataHandler implements DataHandler
       }
       catch (Exception e)
       {
-         throw new DBUnitDataSetHandlingException(e);
+         throw new DBUnitDataSetHandlingException("Unable to clean database.", e);
       }
    }
 
    @Override
    public void executeScripts(@Observes ExecuteScripts executeScriptsEvent)
    {
-      for (SqlScriptDescriptor scriptDescriptor : executeScriptsEvent.getDescriptors())
+      for (SqlScriptResourceDescriptor scriptDescriptor : executeScriptsEvent.getDescriptors())
       {
          final String script = ScriptHelper.loadScript(scriptDescriptor.getLocation());
          executeScript(script);
@@ -167,7 +167,7 @@ public class DBUnitDataHandler implements DataHandler
       }
       catch (Exception e)
       {
-         throw new DBUnitDataSetHandlingException(e);
+         throw new DBUnitDataSetHandlingException("Unable to execute script: " + script, e);
       }
       finally
       {
@@ -179,7 +179,7 @@ public class DBUnitDataHandler implements DataHandler
             }
             catch (SQLException e)
             {
-               throw new DBUnitDataSetHandlingException("Unable to close statement", e);
+               throw new DBUnitDataSetHandlingException("Unable to close statement after script execution.", e);
             }
          }
       }
@@ -194,6 +194,7 @@ public class DBUnitDataHandler implements DataHandler
 
    private void cleanDatabase() throws Exception
    {
+      // TODO rework
       DatabaseConnection connection = databaseConnection.get();
       IDataSet dataSet = null;
       if (configuration.get().isDeleteTestDatasetTablesOnly()) {

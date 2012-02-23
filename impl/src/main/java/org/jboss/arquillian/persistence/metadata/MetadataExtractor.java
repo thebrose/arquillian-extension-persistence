@@ -17,6 +17,7 @@
  */
 package org.jboss.arquillian.persistence.metadata;
 
+import org.jboss.arquillian.persistence.Cleanup;
 import org.jboss.arquillian.persistence.DataSource;
 import org.jboss.arquillian.persistence.PersistenceTest;
 import org.jboss.arquillian.persistence.ShouldMatchDataSet;
@@ -25,6 +26,11 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.persistence.UsingScript;
 import org.jboss.arquillian.test.spi.TestClass;
 
+/**
+*
+* @author <a href="mailto:bartosz.majsak@gmail.com">Bartosz Majsak</a>
+*
+*/
 public class MetadataExtractor
 {
 
@@ -40,6 +46,8 @@ public class MetadataExtractor
 
    private final AnnotationInspector<Transactional> transactionalInspector;
 
+   private final AnnotationInspector<Cleanup> cleanupInspector;
+
    public MetadataExtractor(TestClass testClass)
    {
       this.testClass = testClass;
@@ -48,6 +56,7 @@ public class MetadataExtractor
       this.shouldMatchDataSetInspector = new AnnotationInspector<ShouldMatchDataSet>(testClass, ShouldMatchDataSet.class);
       this.usingScriptInspector = new AnnotationInspector<UsingScript>(testClass, UsingScript.class);
       this.transactionalInspector = new AnnotationInspector<Transactional>(testClass, Transactional.class);
+      this.cleanupInspector = new AnnotationInspector<Cleanup>(testClass, Cleanup.class);
    }
 
    public AnnotationInspector<DataSource> dataSource()
@@ -73,6 +82,11 @@ public class MetadataExtractor
    public AnnotationInspector<Transactional> transactional()
    {
       return transactionalInspector;
+   }
+
+   public AnnotationInspector<Cleanup> cleanup()
+   {
+      return cleanupInspector;
    }
 
    public boolean hasPersistenceTestAnnotation()

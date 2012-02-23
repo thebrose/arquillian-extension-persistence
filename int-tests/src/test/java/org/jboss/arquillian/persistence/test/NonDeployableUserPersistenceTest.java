@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.arquillian.example;
+package org.jboss.arquillian.persistence.test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -29,6 +29,9 @@ import org.jboss.arquillian.persistence.TransactionMode;
 import org.jboss.arquillian.persistence.Transactional;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.persistence.UsingScript;
+import org.jboss.arquillian.persistence.test.Address;
+import org.jboss.arquillian.persistence.test.UserAccount;
+import org.jboss.arquillian.persistence.test.util.Query;
 import org.junit.Test;
 
 /**
@@ -189,7 +192,7 @@ public abstract class NonDeployableUserPersistenceTest
 
       // then
       @SuppressWarnings("unchecked")
-      List<UserAccount> savedUserAccounts = em.createQuery(selectAllInJPQL(UserAccount.class)).getResultList();
+      List<UserAccount> savedUserAccounts = em.createQuery(Query.selectAllInJPQL(UserAccount.class)).getResultList();
       assertThat(savedUserAccounts).hasSize(2);
    }
 
@@ -209,7 +212,7 @@ public abstract class NonDeployableUserPersistenceTest
 
       // then
       @SuppressWarnings("unchecked")
-      List<UserAccount> savedUserAccounts = em.createQuery(selectAllInJPQL(UserAccount.class)).getResultList();
+      List<UserAccount> savedUserAccounts = em.createQuery(Query.selectAllInJPQL(UserAccount.class)).getResultList();
       assertThat(savedUserAccounts).hasSize(2);
    }
 
@@ -241,7 +244,7 @@ public abstract class NonDeployableUserPersistenceTest
 
       // when
       @SuppressWarnings("unchecked")
-      List<UserAccount> userAccounts = em.createQuery(selectAllInJPQL(UserAccount.class)).getResultList();
+      List<UserAccount> userAccounts = em.createQuery(Query.selectAllInJPQL(UserAccount.class)).getResultList();
 
       // then
       assertThat(userAccounts).hasSize(expectedUserAmount);
@@ -296,13 +299,6 @@ public abstract class NonDeployableUserPersistenceTest
 
       // then
       // verified by DataSet comparision
-   }
-
-   // Private helper methods
-
-   private String selectAllInJPQL(Class<?> clazz)
-   {
-      return "SELECT entity FROM " + clazz.getSimpleName() + " entity";
    }
 
 }
